@@ -1,6 +1,7 @@
 import React from "react";
-import Home from "./pages/home";
+import Home from "./pages/TempHome"
 import bgVideo from "./assets/bg2.mp4";
+import TempHome from "./pages/TempHome";
 
 export default function App() {
   return (
@@ -20,7 +21,7 @@ export default function App() {
 
       {/* 💨 Main Content (Your Home Page) */}
       <div className="relative z-10 flex items-center justify-center h-full px-4">
-        <Home />
+        <TempHome/>
       </div>
 
       {/* ✨ Optional Floating Glow Effect */}

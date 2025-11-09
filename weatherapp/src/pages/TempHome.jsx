@@ -6,7 +6,7 @@ import { WiDaySunnyOvercast } from "react-icons/wi"; // 🌤️ main weather ico
 
 const API_KEY = import.meta.env.VITE_OWM_API_KEY;
 
-export default function Home() {
+export default function TempHome() {
   const [city, setCity] = useState("Delhi");
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
