@@ -15,38 +15,39 @@ export default function TempHome() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  async function fetchWeather(q) {
+  function fetchWeather(q) {
     if (!q) return;
     setLoading(true);
     setError("");
 
-    try {
-      const res = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${q}&appid=${API_KEY}&units=metric`
-      );
-
-      if (!res.ok) throw new Error("City not found");
-
-      const json = await res.json();
-      const { lat, lon } = json.coord;
-
-      const aqiRes = await fetch(
-        `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${API_KEY}`
-      );
-
-      if (!aqiRes.ok) throw new Error("Failed to fetch air quality");
-
-      const aqiJson = await aqiRes.json();
-      const airQuality = aqiJson.list[0].main.aqi;
-
-      setData({ ...json, airQuality });
-      setCity(q);
-    } catch (err) {
-      setError(err.message);
-      setData(null);
-    } finally {
-      setLoading(false);
-    }
+    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${q}&appid=${API_KEY}&units=metric`)
+      .then(res => {
+        if (!res.ok) throw new Error("City not found");
+        return res.json();
+      })
+      .then(json => {
+        const { lat, lon } = json.coord;
+        fetch(`https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${API_KEY}`)
+          .then(aqiRes => {
+            if (!aqiRes.ok) throw new Error("Failed to fetch air quality");
+            return aqiRes.json();
+          })
+          .then(aqiJson => {
+            const airQuality = aqiJson.list[0].main.aqi;
+            setData({ ...json, airQuality });
+            setCity(q);
+          })
+          .catch(err => {
+            setError(err.message);
+            setData(null);
+          })
+          .finally(() => setLoading(false));
+      })
+      .catch(err => {
+        setError(err.message);
+        setData(null);
+        setLoading(false);
+      });
   }
 
   useEffect(() => {
@@ -54,31 +55,31 @@ export default function TempHome() {
   }, []);
 
   return (
-    <div className="w-full flex flex-col items-center justify-center gap-6 mb-10">
+    <div className="w-full max-w-7xl mx-auto px-4 py-10 flex flex-col items-center justify-center">
       {/* Title */}
-      <div className="flex flex-col items-center mb-10 text-center">
-        <h1
-          className="text-4xl font-extrabold flex items-center gap-3
-          text-transparent bg-clip-text bg-gradient-to-r
-          from-teal-400 via-blue-400 to-indigo-500 drop-shadow-lg"
-        >
-          <WiDaySunnyOvercast className="text-5xl text-yellow-400 animate-pulse" />
-          Climate<span className="text-white">App</span>
-        </h1>
-
-        {/* Search */}
-        <div className="w-full max-w-xl mt-6">
-          <SearchBar onSearch={(q) => fetchWeather(q)} />
-        </div>
-      </div>
+      <div className="flex flex-col items-center mb-10 text-center w-full">
+      <h1
+    className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3 text-3xl sm:text-4xl md:text-5xl font-extrabold
+    text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-blue-400 to-indigo-500 drop-shadow-lg"
+  >
+    <WiDaySunnyOvercast className="text-4xl sm:text-5xl md:text-6xl text-yellow-400 animate-pulse" />
+    <span className="flex items-center">
+      Climate<span className="text-white ml-1">App</span>
+    </span>
+  </h1>
+</div>
+  {/* Search */}
+  <div className="w-full max-w-xs sm:max-w-md md:max-w-lg mt-6 px-2">
+    <SearchBar onSearch={(q) => fetchWeather(q)} />
+  </div>
 
       {loading && <Loader />}
       {error && <div className="mt-4 text-red-400 text-center">{error}</div>}
 
       {data && !loading && !error && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 mt-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 lg:gap-10 mt-10 w-full">
           {/* Left: Weather Card */}
-          <div className="lg:col-span-2">
+          <div className="md:col-span-2 lg:col-span-2 w-full">
             <WeatherCard data={data} />
           </div>
 
