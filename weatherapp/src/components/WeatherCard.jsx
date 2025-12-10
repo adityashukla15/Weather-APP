@@ -10,7 +10,7 @@ import {
 import { motion } from "framer-motion"; // 👈 import here
 
 export default function WeatherCard({ data }) {
-  const { name, sys, main, weather, wind } = data;
+  const { name, sys, main, weather, wind,airQuality} = data;
   const desc = weather?.[0]?.description?.toLowerCase() || "";
 
   const getWeatherIcon = () => {
@@ -23,7 +23,13 @@ export default function WeatherCard({ data }) {
     if (desc.includes("thunder")) return <WiThunderstorm className="text-6xl text-purple-400" />;
     return <WiDaySunny className="text-6xl text-yellow-400" />;
   };
-
+const aqiLabel = {
+    1: "Good",
+    2: "Fair",
+    3: "Moderate",
+    4: "Poor",
+    5: "Very Poor",
+  };
   return (
     // 👇 your animated card container
     <motion.div
@@ -62,6 +68,13 @@ export default function WeatherCard({ data }) {
           <p>{wind.speed} m/s</p>
         </div>
       </div>
+       <div className=" m-8 p-4 bg-gray-800 rounded-lg text-white space-y-2">
+
+      <div className="bg-white/5 rounded-lg p-2">
+        <p>Air Quality</p>
+        <p>{aqiLabel[airQuality]}</p>
+      </div>
+    </div>
     </motion.div>
   );
 }
