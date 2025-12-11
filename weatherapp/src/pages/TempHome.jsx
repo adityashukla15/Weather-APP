@@ -64,7 +64,7 @@ export default function TempHome() {
   >
     <WiDaySunnyOvercast className="text-4xl sm:text-5xl md:text-6xl text-yellow-400 animate-pulse" />
     <span className="flex items-center">
-      Climate<span className="text-white ml-1">App</span>
+      Fore<span className="text-white ml-1">Castly</span>
     </span>
   </h1>
 </div>
